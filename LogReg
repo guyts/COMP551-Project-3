@@ -1,0 +1,60 @@
+
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+import pandas as pd
+import time
+from sklearn import linear_model, datasets
+
+original_train_x = np.load("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/Dev 3/tinyX.npy")
+original_train_y = np.load("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/Dev 3/tinyY.npy")
+
+kaggle = np.load("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/Dev 3/tinyX_test.npy")
+
+idx = random.sample(range(np.size(original_train_y)), np.size(original_train_y))
+
+totX = original_train_x[idx]
+totY = original_train_y[idx] 
+
+
+totX = np.reshape(totX, (26344,12288))
+kaggle = np.reshape(kaggle, (6600,12288))
+
+testX = totX
+testY = totY
+
+temp = pd.DataFrame(totX)
+temp['Y'] = totY
+tempX = temp.loc[temp.Y == 20].head(100)
+i = 1
+while i < 40:
+    temp2 = temp.loc[temp.Y == i].head(100)
+    tempX = tempX.append(temp2)
+    i+=1
+
+trainY = tempX.Y.values
+del tempX['Y']
+trainX = tempX.values
+
+
+logreg = linear_model.LogisticRegression()
+
+
+logreg.fit(trainX, trainY)
+
+Z = logreg.predict(testX)
+
+df = pd.DataFrame(Z)
+df['class'] = testY
+
+df['correct'] = np.where(df[0] == df['class'],1,0)
+
+good_class_test = df.correct.mean()*100
+
+submission = pd.DataFrame(logreg.predict(kaggle))
+
+submission.columns = ['class']
+
+submission.to_csv("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/Dev 3/LogReg.csv")
+
+    
