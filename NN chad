@@ -4,6 +4,10 @@ import random
 import pandas as pd
 import time
 from sklearn import linear_model, datasets
+from keras.layers import Conv2D, Reshape, Flatten, Dropout, BatchNormalization
+from keras.models import Sequential
+from keras.layers import Dense, Activation
+from keras.optimizers import Adam
 
 original_train_x = np.load("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/Dev 3/tinyX.npy")
 original_train_y = np.load("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/Dev 3/tinyY.npy")
@@ -13,7 +17,7 @@ kaggle = np.load("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/
 idx = random.sample(range(np.size(original_train_y)), np.size(original_train_y))
 
 totX = original_train_x[idx]
-totY = original_train_y[idx] 
+totY = original_train_y[idx]
 
 
 totX = np.reshape(totX, (26344,12288))
@@ -24,7 +28,7 @@ kaggle = np.reshape(kaggle, (6600,12288))
 
 #trainX, test = totX[:round((0.8*len(totX)),0),:], totX[round((0.8*len(totX)),0):,:]
 
-                     
+                    
 temp = pd.DataFrame(totX)
 temp['Y'] = totY
 
@@ -65,23 +69,10 @@ submission.columns = ['class']
 
 submission.to_csv("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/Dev 3/LogReg.csv")
 
-
-
-
-from keras.layers import Conv2D, Reshape, Flatten, Dropout, BatchNormalization
-from keras.models import Sequential
-from keras.layers import Dense, Activation
 model = Sequential()
-# first we need to reshape the flat 784 vector into a (n,w,h) image
-# MNIST is greyscale so n=1, w=h=28
-#trainX = np.reshape(trainX, (5269,3,64,64))
 
 model.add(Reshape((3,64,64), input_shape=(12288,)))
-# small filters are usually preferred, here we're going to use 16 3x3 filters
-# instead of an Activation layer, we can directly use the 'activation' keyword:
 model.add(Conv2D(32, 3, 3, border_mode='same', subsample=(2,2), activation='relu'))
-model.add(Conv2D(32, 3, 3, border_mode='same', subsample=(2,2), activation='relu'))
-model.add(BatchNormalization())
 model.add(Conv2D(32, 3, 3, border_mode='same', subsample=(2,2), activation='relu'))
 model.add(BatchNormalization())
 
@@ -90,12 +81,11 @@ model.add(Dense(output_dim=64, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(output_dim=40, activation='softmax'))
 
-# compile the model
-#model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-from keras.optimizers import Adam
-model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(lr=0.0001), metrics=['accuracy'])
-# train it
-model.fit(trainX, trainY, nb_epoch=5)
+model.compile(loss='sparse_categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
+
+#model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(lr=0.0005), metrics=['accuracy'])
+
+model.fit(trainX, trainY, nb_epoch=20)
 
 # test it!
 validation_metrics = model.evaluate(testX, testY)
@@ -105,5 +95,6 @@ print(validation_metrics)
 Z = model.predict(kaggle)
 
 Z = pd.DataFrame(Z)
-Z = Z.idxmax(axis=1)
+Z = pd.DataFrame(Z.idxmax(axis=1))
 Z.columns = ['class']
+Z.to_csv("C:/Users/Dell/Documents/HEC/Session 2/Mcgill Machine Learning/Dev 3/keras20e2cetadam.csv", index=True, index_label="id")
