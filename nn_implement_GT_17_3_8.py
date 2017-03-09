@@ -12,9 +12,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-original_train_x = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX.npy')  # this should have shape (26344, 3, 64, 64)
-original_train_y = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyY.npy')
-testX = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX_test.npy') # (6600, 3, 64, 64)
+original_train_x = np.load('C:/Users/guyts/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX.npy')  # this should have shape (26344, 3, 64, 64)
+original_train_y = np.load('C:/Users/guyts/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyY.npy')
+testX = np.load('C:/Users/guyts/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX_test.npy') # (6600, 3, 64, 64)
 
 idx = random.sample(range(np.size(original_train_y)), np.size(original_train_y))
 
@@ -60,10 +60,13 @@ def output_calc(w,x):
     return sigmoid(np.dot(w,x))
     
     
-for img in trainX:
-    # running on the input pictures
-    x = np.transpose(np.asarray(trainX[img]))
+#for img in trainX:
+#    # running on the input pictures
+
+
+    x = np.copy(np.asarray(trainX))
     for layer in range(0,numLayers):
+        # running on the layers to calculate the outputs
         w = W[:,layer]
         # Start by calculating the output of all the neurons in layer K
         if layer == 0:
