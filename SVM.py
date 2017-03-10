@@ -27,22 +27,31 @@ img_gray = to_gray(trainX[60].transpose(2,1,0))
 plt.imshow(img_gray, cmap='gray');
 
 
+# -------------------------------------------------------------------------------- #
+# ----------- Changeing training data to gray scale -------------------------------------------- #
+# -------------------------------------------------------------------------------- #
+
+
 num = trainX.size
 graytrainx = []
 for i in range(0, 26344):
     print("changing to Gray" + " " + str(i))
     graytrainx.append(to_gray(trainX[i].transpose(2,1,0)))
 graytrainxArr = np.asarray(graytrainx)
-#twoDtrainxArr = graytrainxArr.transpose(2,0,1).reshape(3,-1)
 twoDtrainxArr = graytrainxArr.transpose(2,0,1).reshape(26344 ,-1)
-#clf = svm.SVC()
-#clf.fit(twoDtrainx,img.transpose(2,0,1).reshape(3,-1) Y_train1)  
-#svc = svm.SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
- #   decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
-  #  max_iter=-1, probability=False, random_state=None, shrinking=True,
-   # tol=0.001, verbose=False)
 
-#clf.predict(testX)
+# -------------------------------------------------------------------------------- #
+# ----------- Changeing test data to gray scale -------------------------------------------- #
+# -------------------------------------------------------------------------------- #
+graytestx = []
+for i in range(0, 6600):
+    print("changing to Gray" + " " + str(i))
+    graytestx.append(to_gray(testX[i].transpose(2,1,0)))
+graytestxArr = np.asarray(graytestx)
+twoDtestxArr = graytestxArr.transpose(2,0,1).reshape(6600 ,-1)
+
+
+
 
 # Instantiate and train a support vector machine
 svm = svm.SVC(kernel = 'rbf')
@@ -78,7 +87,7 @@ pred_val_df.to_csv("valpredictions.csv",
 # Predict on test data
 print("Predicting test set...")
 
-pred_test = svm.predict(testX)
+pred_test = svm.predict(twoDtestxArr)
 pred_test_df = pd.DataFrame(pred_test)
 pred_test_df.to_csv("predictions.csv",
 	index_label = "id")
