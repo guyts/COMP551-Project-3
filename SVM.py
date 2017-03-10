@@ -67,7 +67,7 @@ pred_val_df.to_csv("valpredictions.csv",
 # Predict on test data
 print("Predicting test set...")
 
-pred_test = svm.predict(tinyX_test)
+pred_test = svm.predict(testX)
 pred_test_df = pd.DataFrame(pred_test)
 pred_test_df.to_csv("predictions.csv",
 	index_label = "id")
