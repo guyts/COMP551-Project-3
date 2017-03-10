@@ -29,7 +29,7 @@ plt.imshow(img_gray, cmap='gray');
 
 num = trainX.size
 twoDtrainx = []
-for i in range(0, 50):
+for i in range(0, num):
     print("changing to 2d" + str(i))
     twoDtrainx.append(to_gray(trainX[i].transpose(2,1,0)))
 
