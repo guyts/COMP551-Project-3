@@ -29,10 +29,19 @@ plt.imshow(img_gray, cmap='gray');
 
 num = trainX.size
 twoDtrainx = []
-for i in range(0, num):
-    print("changing to 2d" + str(i))
+for i in range(0, 26344):
+    print("changing to 2D" + " " + str(i))
     twoDtrainx.append(to_gray(trainX[i].transpose(2,1,0)))
 
+
+#clf = svm.SVC()
+#clf.fit(twoDtrainx, Y_train1)  
+#svc = svm.SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+ #   decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
+  #  max_iter=-1, probability=False, random_state=None, shrinking=True,
+   # tol=0.001, verbose=False)
+
+#clf.predict(testX)
 
 # Instantiate and train a support vector machine
 svm = svm.SVC(kernel = 'rbf')
