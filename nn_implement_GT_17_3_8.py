@@ -12,15 +12,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-original_train_x = np.load('C:/Users/guyts/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX.npy')  # this should have shape (26344, 3, 64, 64)
-original_train_y = np.load('C:/Users/guyts/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyY.npy')
-testX = np.load('C:/Users/guyts/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX_test.npy') # (6600, 3, 64, 64)
+original_train_x = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX.npy')  # this should have shape (26344, 3, 64, 64)
+original_train_y = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyY.npy')
+testX = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX_test.npy') # (6600, 3, 64, 64)
 
 idx = random.sample(range(np.size(original_train_y)), np.size(original_train_y))
 
 
 classes = 40
-numLayers = 3
+numLayers = 4
 
 trainX = original_train_x[idx]/255
 trainX = np.reshape(trainX, (26344,12288))
@@ -60,13 +60,15 @@ def output_calc(w,x):
     # output. Both x and w are vectors
     return sigmoid(np.dot(x,w))
     
-def transfer_derivative(output):
+def derivative(output):
 	return output * (1.0 - output)
 # setting up forward propagation:
     # we shall run forward, with a random set of weights for each layer
 all_xs = {}
 all_ws = {}
 x = np.copy(np.asarray(X_train1))
+all_xs[0] = x
+
 for layer in range(0,numLayers):
     # running on the layers to calculate the outputs
     
@@ -83,16 +85,28 @@ for layer in range(0,numLayers):
         # if it's in the last layer, the output will be the predicted output
         # we randomize W to have the appropriate size
         o_last = output_calc(W,xji)
-        ypred = np.exp(o_last) / np.sum(np.exp(o_last),axis=1,keepdims=True)
+        probs = np.exp(o_last) / np.sum(np.exp(o_last),axis=1,keepdims=True)
         all_ws[layer]=W
-
+        all_xs[layer+1]=o_last
         break #exiting the for loop, since it's the last layer
     else: 
         # if it's in one of the midlayers
         W = np.random.randn(prev_dim, hlayer_size)
         o = output_calc(W,xji)
     xji = o # copying the output into the input of the next layer
-    all_xs[layer]=xji
+    all_xs[layer+1]=xji
     all_ws[layer]=W
     del W
     prev_dim = np.size(xji,1)
+    
+# back propagation now - 
+err_output = (Y_train1-o_last)*transfer_derivative(o_last)
+err_hidden = 
+
+# delta of the fourth layer out of 4:
+delta_final = all_xs[numLayers]-Y_train1
+# delta of the third layer (out of 4 layers)
+delta_3 = np.multiply(np.dot(all_ws[numLayers-1],np.transpose(delta_final)),np.transpose(derivative(all_xs[numLayers-1])))
+
+def backprop(all_xs,all_ws,Y_train1,numLayers):
+    for layer in numLayers:
