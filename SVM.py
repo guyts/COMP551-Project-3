@@ -28,14 +28,15 @@ plt.imshow(img_gray, cmap='gray');
 
 
 num = trainX.size
-twoDtrainx = []
+graytrainx = []
 for i in range(0, 26344):
-    print("changing to 2D" + " " + str(i))
-    twoDtrainx.append(to_gray(trainX[i].transpose(2,1,0)))
-
-
+    print("changing to Gray" + " " + str(i))
+    graytrainx.append(to_gray(trainX[i].transpose(2,1,0)))
+graytrainxArr = np.asarray(graytrainx)
+#twoDtrainxArr = graytrainxArr.transpose(2,0,1).reshape(3,-1)
+twoDtrainxArr = graytrainxArr.transpose(2,0,1).reshape(26344 ,-1)
 #clf = svm.SVC()
-#clf.fit(twoDtrainx, Y_train1)  
+#clf.fit(twoDtrainx,img.transpose(2,0,1).reshape(3,-1) Y_train1)  
 #svc = svm.SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
  #   decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
   #  max_iter=-1, probability=False, random_state=None, shrinking=True,
@@ -47,7 +48,8 @@ for i in range(0, 26344):
 svm = svm.SVC(kernel = 'rbf')
 
 # Train the SVM
-x_train, x_val, y_train, y_val = train_test_split(twoDtrainx, trainY, test_size = 0.8)
+x_train, x_val, y_train, y_val = train_test_split(twoDtrainxArr , trainY, test_size = 0.8)
+
 
 print("Training SVM...")
 svm.fit(x_train, y_train)
