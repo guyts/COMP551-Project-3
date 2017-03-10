@@ -1,8 +1,12 @@
-from sklearn import svm
 %matplotlib inline
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import SGDClassifier
+from sklearn import svm
+from sklearn.metrics import confusion_matrix
+import pandas as pd
+import csv
+from sklearn.pipeline import Pipeline
 import cv2
-
-
 import numpy as np
 import random
 import matplotlib.pyplot as plt
@@ -15,25 +19,56 @@ idx = random.sample(range(np.size(original_train_y)), np.size(original_train_y))
 
 trainX = original_train_x[idx]
 trainY = original_train_y[idx] 
-img = plt.imshow(trainX[60].transpose(2,1,0))
 
-trainX = original_train_x[idx]/255
-#X_train = np.copy(trainX)
-trainY = original_train_y[idx] 
-#Y_train = np_utils.to_categorical(trainY, 40)
-
-# choosing a smaller subset
-Y_train1 = trainY[0:1000]
-X_train1 = trainX[0:1000]
-X_test = trainX[2500:3400]
-Y_test = trainY[2500:3400]
+def to_gray(color_img):
+    gray = cv2.cvtColor(color_img, cv2.COLOR_BGR2GRAY)
+    return gray
+img_gray = to_gray(trainX[60].transpose(2,1,0))
+plt.imshow(img_gray, cmap='gray');
 
 
-clf = svm.SVC()
-clf.fit(X_train1, Y_train1)  
-svc = svm.SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
-    decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
-    max_iter=-1, probability=False, random_state=None, shrinking=True,
-    tol=0.001, verbose=False)
+num = trainX.size
+twoDtrainx = []
+for i in range(0, num):
+    print("changing to 2d" + str(i))
+    twoDtrainx.append(to_gray(trainX[i].transpose(2,1,0)))
 
-clf.predict(testX)
+
+# Instantiate and train a support vector machine
+svm = svm.SVC(kernel = 'rbf')
+
+# Train the SVM
+x_train, x_val, y_train, y_val = train_test_split(twoDtrainx, trainY, test_size = 0.8)
+
+print("Training SVM...")
+svm.fit(x_train, y_train)
+print("Trained SVM.")
+
+# Predict on training data
+print("Predicting training set...")
+pred_train = svm.predict(x_train)
+pred_train_df = pd.DataFrame({
+	'prediction': pred_train,
+	'class': y_train
+	})
+pred_train_df.to_csv("trainprediction.csv",
+	index_label = "id", header = ["prediction", "class"])
+
+# Predict on validation data
+print("Predicting validation set...")
+pred_val = svm.predict(x_val)
+pred_val_df = pd.DataFrame({
+	'prediction': pred_val,
+	'class': y_val
+	})
+pred_val_df.to_csv("valpredictions.csv",
+	index_label = "id", header = ["prediction", "class"])
+
+# Predict on test data
+print("Predicting test set...")
+
+pred_test = svm.predict(testX)
+pred_test_df = pd.DataFrame(pred_test)
+pred_test_df.to_csv("predictions.csv",
+	index_label = "id")
+
