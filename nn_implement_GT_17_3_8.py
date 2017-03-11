@@ -12,9 +12,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-original_train_x = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX.npy')  # this should have shape (26344, 3, 64, 64)
-original_train_y = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyY.npy')
-testX = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX_test.npy') # (6600, 3, 64, 64)
+original_train_x = np.load('C:/Users/guyts/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX.npy')  # this should have shape (26344, 3, 64, 64)
+original_train_y = np.load('C:/Users/guyts/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyY.npy')
+#testX = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX_test.npy') # (6600, 3, 64, 64)
 
 idx = random.sample(range(np.size(original_train_y)), np.size(original_train_y))
 
@@ -100,13 +100,31 @@ for layer in range(0,numLayers):
     prev_dim = np.size(xji,1)
     
 # back propagation now - 
-err_output = (Y_train1-o_last)*transfer_derivative(o_last)
-err_hidden = 
+#err_output = (Y_train1-o_last)*transfer_derivative(o_last)
+#err_hidden = 
 
 # delta of the fourth layer out of 4:
-delta_final = all_xs[numLayers]-Y_train1
+#delta_final = all_xs[numLayers]-Y_train1
 # delta of the third layer (out of 4 layers)
-delta_3 = np.multiply(np.dot(all_ws[numLayers-1],np.transpose(delta_final)),np.transpose(derivative(all_xs[numLayers-1])))
-
-def backprop(all_xs,all_ws,Y_train1,numLayers):
+#delta_3 = np.multiply(np.dot(all_ws[numLayers-1],np.transpose(delta_final)),np.transpose(derivative(all_xs[numLayers-1])))
+alpha = 0.1
+deltas={}
+def backprop(all_xs,all_ws,Y_train1,numLayers,alpha):
     for layer in numLayers:
+        if layer == 0:
+            #in case it's the last layer
+            delta = all_xs[numLayers-layer]-Y_train1
+        elif layer == numLayers:
+            #in this case we got back to the first layer which doesnt have a dlta
+            all_ws[numLayers-layer] = all_ws[numLayers-layer]+alpha*delta
+            break
+        else:
+            delta = np.transpose(np.multiply(np.dot(all_ws[numLayers-layer],np.transpose(deltas[layer-1])),np.transpose(derivative(all_xs[numLayers-layer]))))
+            all_ws[numLayers-layer] = all_ws[numLayers-layer]+alpha*delta
+        deltas[layer] = delta
+
+    return all_ws
+
+
+
+
