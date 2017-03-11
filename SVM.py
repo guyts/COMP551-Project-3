@@ -55,13 +55,13 @@ twoDtestxArr = graytestxArr.transpose(2,0,1).reshape(6600 ,-1)
 
 
 # Instantiate and train a support vector machine
-svm = svm.SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+svm = svm.SVC(C=100, cache_size=200, class_weight=None, coef0=0.0,
     decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
     max_iter=-1, probability=False, random_state=None, shrinking=True,
     tol=0.001, verbose=False)
 
 # Train the SVM
-x_train, x_val, y_train, y_val = train_test_split(twoDtrainxArr , trainY, test_size = 0.8)
+x_train, x_val, y_train, y_val = train_test_split(twoDtrainxArr , trainY, test_size = 0.3)
 
 
 print("Training SVM...")
@@ -95,7 +95,9 @@ print(confusion_matrix(pred_val, y_val))
 print("Predicting test set...")
 
 pred_test = svm.predict(twoDtestxArr)
-pred_test_df = pd.DataFrame(pred_test)
+pred_test_df = pd.DataFrame({
+	'class': pred_test,
+	})
 pred_test_df.to_csv("predictions.csv",
 	index_label = "id", header = ["class"])
 print(svm.score(twoDtestxArr, pred_test))
