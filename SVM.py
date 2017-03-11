@@ -2,10 +2,11 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import SGDClassifier
 from sklearn import svm
+from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline
 from sklearn.metrics import confusion_matrix
 import pandas as pd
 import csv
-from sklearn.pipeline import Pipeline
 import cv2
 import numpy as np
 import random
@@ -54,7 +55,10 @@ twoDtestxArr = graytestxArr.transpose(2,0,1).reshape(6600 ,-1)
 
 
 # Instantiate and train a support vector machine
-svm = svm.SVC(kernel = 'rbf')
+svm = svm.SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+    decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
 
 # Train the SVM
 x_train, x_val, y_train, y_val = train_test_split(twoDtrainxArr , trainY, test_size = 0.8)
@@ -73,6 +77,7 @@ pred_train_df = pd.DataFrame({
 	})
 pred_train_df.to_csv("trainprediction.csv",
 	index_label = "id", header = ["prediction", "class"])
+print(svm.score(x_train, y_train))
 
 # Predict on validation data
 print("Predicting validation set...")
@@ -83,6 +88,8 @@ pred_val_df = pd.DataFrame({
 	})
 pred_val_df.to_csv("valpredictions.csv",
 	index_label = "id", header = ["prediction", "class"])
+print(svm.score(x_val, y_val))
+print(confusion_matrix(pred_val, y_val))
 
 # Predict on test data
 print("Predicting test set...")
@@ -90,5 +97,6 @@ print("Predicting test set...")
 pred_test = svm.predict(twoDtestxArr)
 pred_test_df = pd.DataFrame(pred_test)
 pred_test_df.to_csv("predictions.csv",
-	index_label = "id", header = ["prediction", "class"])
-
+	index_label = "id", header = ["class"])
+print(svm.score(twoDtestxArr, pred_test))
+#print(confusion_matrix(twoDtestxArr, pred_test ))
