@@ -109,7 +109,7 @@ for layer in range(0,numLayers):
 #delta_3 = np.multiply(np.dot(all_ws[numLayers-1],np.transpose(delta_final)),np.transpose(derivative(all_xs[numLayers-1])))
 alpha = 0.1
 deltas={}
-def backprop(all_xs,all_ws,Y_train1,numLayers,alpha):
+def backprop(all_xs,all_ws,Y_train1,numLayers,alpha,deltas):
     for layer in numLayers:
         if layer == 0:
             #in case it's the last layer
@@ -120,11 +120,11 @@ def backprop(all_xs,all_ws,Y_train1,numLayers,alpha):
             break
         else:
             delta = np.transpose(np.multiply(np.dot(all_ws[numLayers-layer],np.transpose(deltas[layer-1])),np.transpose(derivative(all_xs[numLayers-layer]))))
-            all_ws[numLayers-layer] = all_ws[numLayers-layer]+alpha*delta
+            all_ws[numLayers-layer] = all_ws[numLayers-layer]+np.transpose(alpha*np.dot(np.transpose(deltas[layer-1]),all_xs[numLayers-layer]))
         deltas[layer] = delta
 
-    return all_ws
+    return all_ws, deltas
 
-
+all_ws, deltas = backprop(all_xs,all_ws,Y_train1,numLayers,alpha,deltas)
 
 
