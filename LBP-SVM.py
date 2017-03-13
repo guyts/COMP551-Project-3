@@ -38,7 +38,7 @@ plt.imshow(img_gray, cmap='gray');
 num = trainX.size
 graytrainx = []
 for i in range(0, 26344):
-    print("changing to Gray" + " " + str(i))
+    print("changing training data to Gray" + " " + str(i))
     graytrainx.append(to_gray(trainX[i].transpose(2,1,0)))
 graytrainxArr = np.asarray(graytrainx)
 twoDtrainxArr = graytrainxArr.transpose(0,1,2).reshape(26344 ,-1)
@@ -48,7 +48,7 @@ twoDtrainxArr = graytrainxArr.transpose(0,1,2).reshape(26344 ,-1)
 # -------------------------------------------------------------------------------- #
 graytestx = []
 for i in range(0, 6600):
-    print("changing to Gray" + " " + str(i))
+    print("changing test data to Gray" + " " + str(i))
     graytestx.append(to_gray(testX[i].transpose(2,1,0)))
 graytestxArr = np.asarray(graytestx)
 twoDtestxArr = graytestxArr.transpose(2,0,1).reshape(6600 ,-1)
@@ -89,6 +89,7 @@ for i in range(0, 26344):
   #print("LBP" + " " + str(i))
   lbptrainX.append(local_binary_pattern(graytrainxArr[i], n_points, radius, METHOD))
 
+print ("Extracting LBP feature & histogram for training set...")
 histtrainX = []
 for i in range(0, 26344):
   print("hist" + " " + str(i))
@@ -100,14 +101,15 @@ histtrainXArr = np.asarray(histtrainX)
 # ----------------------------------------------------------- #        
 
 lbptestX = []
-for i in range(0, 26344):
+for i in range(0, 6600):
   #print("LBP" + " " + str(i))
   lbptestX.append(local_binary_pattern(graytestxArr[i], n_points, radius, METHOD))
-
+  
+print ("Extracting LBP feature & histogram for Testing set...")
 histtestX = []
-for i in range(0, 26344):
+for i in range(0, 6600):
   print("hist" + " " + str(i))
-  histtrainX.append(np.histogram(lbptestX[i]))
+  histtestX.append(np.histogram(lbptestX[i]))
 histtestXArr = np.asarray(histtestX)
 
 # ------------------------------------------------------------#
