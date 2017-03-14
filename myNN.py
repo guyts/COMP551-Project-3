@@ -174,7 +174,6 @@ variables = RollParams(model)
 
 
 X = trainX
-#X = trainX.reshape(60000, -1)
 y = np.zeros((trainY.shape[0], nClass))
 for i in range(trainY.shape[0]):
     y[i, trainY[i]] = 1
