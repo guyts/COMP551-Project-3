@@ -11,26 +11,15 @@ import matplotlib.pyplot as plt
 ##
 original_train_x = np.load('tinyX.npy')  # this should have shape (26344, 3, 64, 64)
 original_train_y = np.load('tinyY.npy')
-#testX = np.load('C:/Users/gtsror/OneDrive/Important Docs/MSc/McGill/Semester B/COMP551/Projects/Project 3/tinyX_test.npy') # (6600, 3, 64, 64)
-
 idx = random.sample(range(np.size(original_train_y)), np.size(original_train_y))
-#numLayers = 2 # means there are 4 layers including the input
+
 
 trainX = original_train_x[idx]/255
 trainX = np.reshape(trainX, (26344,12288))
 
 
-#X_train = np.copy(trainX)
 trainY = original_train_y[idx] 
-#Y_train = np_utils.to_categorical(trainY, 40)
-#Y_train = trainY
-# choosing a smaller subset
-Y_train1 = trainY[0:1000]
 
-X_train1 = trainX[0:1000]
-#
-#X_test = trainX[2500:2800]
-#Y_test = Y_train[2500:2800]
 train_size = len(X_train1)
 ##
 
